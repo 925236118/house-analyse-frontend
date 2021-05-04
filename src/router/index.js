@@ -52,7 +52,8 @@ export const constantRoutes = [
   },
   {
     path: '/',
-    component: () => import('@/views/fountend/index'),
+    name: 'index',
+    component: () => import('@/views/frontend/index'),
     hidden: true
   },
   {
@@ -76,43 +77,42 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/',
+    path: '/backend',
     component: Layout,
-    redirect: '/dashboard',
     children: [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        meta: { title: '仪表盘', icon: 'dashboard', affix: true }
       }
     ]
   },
-  {
-    path: '/documentation',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/documentation/index'),
-        name: 'Documentation',
-        meta: { title: 'Documentation', icon: 'documentation', affix: true }
-      }
-    ]
-  },
-  {
-    path: '/guide',
-    component: Layout,
-    redirect: '/guide/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/guide/index'),
-        name: 'Guide',
-        meta: { title: 'Guide', icon: 'guide', noCache: true }
-      }
-    ]
-  },
+  // {
+  //   path: '/documentation',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/documentation/index'),
+  //       name: 'Documentation',
+  //       meta: { title: 'Documentation', icon: 'documentation', affix: true }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/guide',
+  //   component: Layout,
+  //   redirect: '/guide/index',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/guide/index'),
+  //       name: 'Guide',
+  //       meta: { title: 'Guide', icon: 'guide', noCache: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/profile',
     component: Layout,
@@ -134,6 +134,52 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+  {
+    path: '/house',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/house/list'),
+        name: 'HouseList',
+        meta: { title: '房屋列表', icon: 'list', noCache: true }
+      },
+      {
+        path: ':id',
+        component: () => import('@/views/house/detail'),
+        name: 'HouseDetail',
+        meta: { title: '房屋详细信息', icon: 'list', noCache: true },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/source',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/source/list'),
+        name: 'SourceList',
+        meta: { title: '数据来源', icon: 'component', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/city',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/city/list'),
+        name: 'CityList',
+        meta: { title: '城市列表', icon: 'guide', noCache: true }
+      }
+    ]
+  },
+
+
+
   {
     path: '/permission',
     component: Layout,
@@ -393,7 +439,7 @@ export const asyncRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

@@ -1,9 +1,10 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, getUserId, setUserId, removeUserId } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  userId: getUserId(),
   name: '',
   avatar: '',
   introduction: '',
@@ -16,6 +17,9 @@ const mutations = {
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
+  },
+  SET_USER_ID: (state, userId) => {
+    state.userId = userId
   },
   SET_NAME: (state, name) => {
     state.name = name
@@ -34,9 +38,16 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
+        const data = response.results
+        if (data.roles.indexOf('admin') !== -1) {
+          data.token = 'admin-token'
+        } else if (data.roles.indexOf('editor') !== -1) {
+          data.token = 'editor-token'
+        }
         commit('SET_TOKEN', data.token)
+        commit('SET_USER_ID', data.id)
         setToken(data.token)
+        setUserId(data.id)
         resolve()
       }).catch(error => {
         reject(error)
@@ -47,8 +58,8 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      getInfo(state.userId).then(response => {
+        const data = response.results
 
         if (!data) {
           reject('Verification failed, please Login again.')
@@ -80,6 +91,7 @@ const actions = {
         commit('SET_ROLES', [])
         removeToken()
         resetRouter()
+        removeUserId()
 
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
