@@ -21,3 +21,33 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function fetchUserList() {
+  return request({
+    url: '/api/backend/user/',
+    method: 'get'
+  })
+}
+
+export function updateUserById(data) {
+  return request({
+    url: `/api/backend/user/${data.id}`,
+    method: 'put',
+    data
+  })
+}
+
+export function addUser(data) {
+  return request({
+    url: `/api/backend/user/`,
+    method: 'post',
+    data
+  })
+}
+
+export function deleteUserById(params) {
+  return request({
+    url: `/api/backend/user/${params.id}`,
+    method: 'delete'
+  })
+}

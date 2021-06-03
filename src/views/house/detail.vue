@@ -14,7 +14,7 @@
                 <el-card class="attrCard">
                   <div slot="header" class="clearfix">
                     <span style="font-weight: 900;color: #757575">房屋信息</span>
-                    <el-button style="float: right; padding: 3px 0" type="text" @click="editHouse(houseInfo)">编辑
+                    <el-button v-permission="['admin']" style="float: right; padding: 3px 0" type="text" @click="editHouse(houseInfo)">编辑
                     </el-button>
                   </div>
                   <div class="attrItem">
@@ -61,7 +61,7 @@
               <h3>
                 房屋属性详情列表
                 <el-tooltip class="item" effect="dark" content="新建" placement="top">
-                  <el-button type='success' circle size="mini" style="margin-left: 20px" @click="showAddAttrDialog">
+                  <el-button v-permission="['admin']" type='success' circle size="mini" style="margin-left: 20px" @click="showAddAttrDialog">
                     <i class="el-icon-plus" />
                   </el-button>
                 </el-tooltip>
@@ -94,7 +94,7 @@
                     <span v-else>{{ row.attr_value }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="操作" sortable="custom" align="center" width="180">
+                <el-table-column label="操作" sortable="custom" align="center" width="180" v-if="checkPermission(['admin'])">
                   <template slot-scope="{row}">
                     <el-tooltip class="item" v-if="row.id === editId" effect="dark" content="提交" placement="top">
                       <el-button type="primary" size="mini" circle class="button"
@@ -129,17 +129,17 @@
             <h3>
               房屋图片表
               <el-tooltip class="item" effect="dark" content="新建" placement="top">
-                <el-button type='success' circle size="mini" style="margin-left: 20px" @click="showAddImageDialog">
+                <el-button type='success' circle size="mini" style="margin-left: 20px" @click="showAddImageDialog" v-permission="['admin']">
                   <i class="el-icon-plus" />
                 </el-button>
               </el-tooltip>
-              <el-tooltip v-if="!isEditing" class="item" effect="dark" content="编辑" placement="top">
+              <el-tooltip v-if="!isEditing" v-permission="['admin']" class="item" effect="dark" content="编辑" placement="top">
                 <el-button type='primary' circle size="mini" style="margin-left: 20px" @click="editImages">
                   <i class="el-icon-edit" />
                 </el-button>
               </el-tooltip>
               <el-tooltip v-else class="item" effect="dark" content="结束编辑" placement="top">
-                <el-button type='danger' circle size="mini" style="margin-left: 20px" @click="cancleEditImages">
+                <el-button v-permission="['admin']" type='danger' circle size="mini" style="margin-left: 20px" @click="cancleEditImages">
                   <i class="el-icon-close" />
                 </el-button>
               </el-tooltip>
@@ -271,10 +271,13 @@ import { updateHouseAttrById, deleteHouseAttrById, addHouseAttr } from '@/api/ho
 import { addHouseImage, deleteHouseImageById } from '@/api/houseImage'
 import { fetchSourceList } from '@/api/source'
 import { fetchCityList } from '@/api/city'
+import permission from '@/directive/permission/index.js' // 权限判断指令
+import checkPermission from '@/utils/permission' // 权限判断函数
 
 export default {
   name: 'HouseDetail',
   props: ['id'],
+  directives: { permission },
   computed: {
     houseId() {
       return this.$route.params.id
@@ -292,7 +295,10 @@ export default {
         result[item.id] = item.name
       })
       return result
-    }
+    },
+    ...mapGetters([
+      'roles'
+    ])
   },
   data() {
     return {
@@ -383,6 +389,7 @@ export default {
       })
   },
   methods: {
+    checkPermission,
     jumpHouseSourceUrl(url) {
       let oA = document.createElement('a')
       oA.href = url

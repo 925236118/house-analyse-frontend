@@ -28,7 +28,7 @@
             </el-select>
           </el-form-item>
         </el-form>
-        <el-button type="success" @click="showAddHouseDialog" circle style="margin-left:40px">
+        <el-button type="success" @click="showAddHouseDialog" circle style="margin-left:40px" v-permission="['admin']">
           <i class="el-icon-plus" />
         </el-button>
       </el-col>
@@ -62,7 +62,7 @@
           </el-table-column>
           <el-table-column label="操作" sortable="custom" align="center" width="180">
             <template slot-scope="{row}">
-              <el-button type="primary" size="mini" circle class="button" @click="editHouse(row)">
+              <el-button type="primary" size="mini" circle class="button" @click="editHouse(row)" v-permission="['admin']">
                 <el-tooltip class="item" effect="dark" content="编辑" placement="top">
                   <i class="el-icon-edit" />
                 </el-tooltip>
@@ -79,7 +79,7 @@
                 </el-tooltip>
               </el-button>
               <el-button slot="reference" type="danger" size="mini" circle class="button" style="margin-right: 5px"
-                         @click="removeHouse(row.id)">
+                         @click="removeHouse(row.id)" v-permission="['admin']">
                 <el-tooltip class="item" effect="dark" content="删除" placement="top">
                   <i class="el-icon-minus" />
                 </el-tooltip>
@@ -154,9 +154,12 @@
 import { fetchHouseList, removeHouseById, updateHouse, addHouse } from '@/api/house'
 import { fetchSourceList } from '@/api/source'
 import { fetchCityList } from '@/api/city'
+import permission from '@/directive/permission/index.js' // 权限判断指令
+import checkPermission from '@/utils/permission' // 权限判断函数
 
 export default {
   name: 'HouseList',
+  directives: { permission },
   data() {
     return {
       listLoading: false,
@@ -247,6 +250,7 @@ export default {
       })
   },
   methods: {
+    checkPermission,
     sortChange(data) {
       const { prop, order } = data
       console.log(prop)

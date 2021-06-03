@@ -1,15 +1,36 @@
 <template>
   <div>
-    <a href="/backend/dashboard">
-      <el-button>管理</el-button>
-    </a>
+    <div class="nav">
+      <div class="project-icon">
+        <i class=" el-icon-school" />
+      </div>
+      <h3>
+        房屋租赁信息网站
+      </h3>
+      <div class="login-btn">
+        <a href="/backend/dashboard">
+          <el-button>管理</el-button>
+        </a>
+      </div>
+    </div>
+    <el-row style="margin: 30px 0;">
+      <el-col :offset="8" :span="8">
+        <el-input placeholder="请输入搜索内容" v-model="filterForm.searchValue" class="input-with-select" @change="changeSearchValue">
+          <el-button slot="append" type="primary" icon="el-icon-search"></el-button>
+        </el-input>
+      </el-col>
+    </el-row>
     <el-row>
       <el-col :span="18" class="house-list">
-        <el-row>
-          <el-col v-for="(house, index) in houseList" :key="index" :span="4" :offset="index % 5 === 0 ? 0 : 1">
+        <el-row v-for="(houseRow, rowIndex) in formatShowHouseList" :key="rowIndex">
+          <el-col v-for="(house, index) in houseRow" :key="index" :span="4" :offset="index % 5 === 0 ? 0 : 1">
             <el-card :body-style="{ padding: '0px' }" class="house-card">
-              <img v-if="house.imgs[0]" :src="house.imgs[0]" class="image">
-
+              <el-image
+                v-if="house.imgs[0]"
+                :src="house.imgs[0].img_url"
+                fit="fill"
+                :preview-src-list="house.imgs.map(img => img.img_url)"
+              />
               <div style="padding: 14px;">
                 <el-tooltip class="item" effect="dark" :content="house.title" placement="top">
                   <div class="hosue-title">{{ house.title }}</div>
@@ -64,17 +85,42 @@ export default {
   name: 'Index',
   data() {
     return {
+      originHouseList: [],
       allHouseList: [],
       houseList: [],
       total: 0,
       currentPage: 1,
       pageSize: 30,
-      pageSizes: [10, 20, 30, 50]
+      pageSizes: [10, 20, 30, 50],
+      filterForm: {
+        searchValue: ''
+      }
+    }
+  },
+  computed: {
+    formatShowHouseList () {
+      const colCount = 5
+      let tempHouseList = this.houseList
+      let result = []
+      if (this.houseList.length === 0) {
+        return []
+      }
+      while (true) {
+        if (tempHouseList.length < colCount) {
+          result.push(tempHouseList)
+          break
+        } else {
+          result.push(tempHouseList.slice(0, colCount))
+          tempHouseList = tempHouseList.slice(colCount, tempHouseList.length)
+        }
+      }
+      return result
     }
   },
   mounted() {
     fetchHouseList()
       .then((res) => {
+        this.originHouseList = res.results
         this.allHouseList = res.results
         this.houseList = this.allHouseList.slice(0, this.pageSize)
         this.total = res.count
@@ -97,12 +143,69 @@ export default {
       this.pageSize = val
       this.currentPage = page
       this.houseList = this.allHouseList.slice(0, val)
+    },
+    changeSearchValue () {
+      this.filterHouseList()
+    },
+    filterHouseList () {
+      this.allHouseList = this.originHouseList.filter((dataItem) => {
+        let result = false
+        Object.keys(this.filterForm).forEach(filterKey => {
+          let filterValue = this.filterForm[filterKey]
+          if (!filterValue) return
+          let filterReg = new RegExp(filterValue)
+          Object.keys(dataItem).forEach(dataKey => {
+            if (typeof dataItem[dataKey] !== 'string') return
+            result = result || filterReg.test(dataItem[dataKey])
+          })
+          dataItem.attrs.forEach(attrItem => {
+            result = result || filterReg.test(attrItem.value)
+          })
+        })
+        return result
+      })
+      this.total = this.allHouseList.length
+      this.changePage(1)
     }
   }
 }
 </script>
 
 <style scoped>
+  .nav {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background-color: #7773a0;
+  }
+  .nav h3 {
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+    padding-top: 15px;
+    padding-left: 100px;
+  }
+  .nav .project-icon {
+    position: absolute;
+    font-size: 26px;
+    top: 5px;
+    left: 35px;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding-left: 7px;
+    padding-top: 2px;
+    line-height: 40px;
+    color: #7773a0;
+
+  }
+  .login-btn {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+  }
   /**
   house list
    */
