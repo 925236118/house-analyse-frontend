@@ -21,7 +21,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="18" class="house-list">
+      <el-col :span="18" :offset="3" class="house-list">
         <el-row v-for="(houseRow, rowIndex) in formatShowHouseList" :key="rowIndex">
           <el-col v-for="(house, index) in houseRow" :key="index" :span="4" :offset="index % 5 === 0 ? 0 : 1">
             <el-card :body-style="{ padding: '0px' }" class="house-card">
@@ -71,9 +71,9 @@
           @size-change="handleSizeChange"
         />
       </el-col>
-      <el-col :span="6">
+      <!--<el-col :span="6">
         123456
-      </el-col>
+      </el-col>-->
     </el-row>
 
   </div>
@@ -269,5 +269,6 @@ export default {
   }
   .pagination {
     text-align: center;
+    margin: 20px 0 60px 0;
   }
 </style>
