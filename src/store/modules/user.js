@@ -2,7 +2,7 @@ import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken, getUserId, setUserId, removeUserId } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
-const state = {
+let state = {
   token: getToken(),
   userId: getUserId(),
   name: '',
@@ -37,7 +37,7 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
+  login({ commit, state, dispatch }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
@@ -49,6 +49,8 @@ const actions = {
         }
         commit('SET_TOKEN', data.token)
         commit('SET_USER_ID', data.id)
+        commit('SET_USERNAME', username.trim())
+        dispatch('updateUserModuleState',  {}, {root: true})
         setToken(data.token)
         setUserId(data.id)
         resolve()
@@ -93,6 +95,8 @@ const actions = {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
+        commit('SET_USERNAME', '')
+        dispatch('updateUserModuleState',  {}, {root: true})
         removeToken()
         resetRouter()
         removeUserId()

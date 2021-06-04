@@ -26,8 +26,12 @@ export default {
       type: Boolean,
       default: true
     },
+    selectionType: {
+      type: String,
+      default: ''
+    },
     chartData: {
-      type: Object,
+      type: Array,
       required: true
     }
   },
@@ -42,6 +46,9 @@ export default {
       handler(val) {
         this.setOptions(val)
       }
+    },
+    selectionType (val) {
+      this.setOptions(this.chartData, val)
     }
   },
   mounted() {
@@ -61,72 +68,45 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions(data = {}) {
+      console.log(data)
+      let types = Object.keys(data)
+      let type = this.selectionType || types[0]
+      let xAxisData = data[type].map(item => item.name)
+      let showData = data[type].map(item => item.count)
       this.chart.setOption({
-        xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          boundaryGap: false,
-          axisTick: {
-            show: false
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
           }
         },
         grid: {
-          left: 10,
-          right: 10,
-          bottom: 20,
-          top: 30,
+          top: 10,
+          left: '2%',
+          right: '2%',
+          bottom: '3%',
           containLabel: true
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross'
-          },
-          padding: [5, 10]
-        },
-        yAxis: {
+        xAxis: [{
+          type: 'category',
+          data: xAxisData,
+          axisTick: {
+            alignWithLabel: true
+          }
+        }],
+        yAxis: [{
+          type: 'value',
           axisTick: {
             show: false
           }
-        },
-        legend: {
-          data: ['expected', 'actual']
-        },
+        }],
         series: [{
-          name: 'expected', itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
-            }
-          },
-          smooth: true,
-          type: 'line',
-          data: expectedData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
-        {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
-            normal: {
-              color: '#3888fa',
-              lineStyle: {
-                color: '#3888fa',
-                width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
-              }
-            }
-          },
-          data: actualData,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
+          name: type,
+          type: 'bar',
+          stack: 'vistors',
+          barWidth: '60px',
+          data: showData
         }]
       })
     }

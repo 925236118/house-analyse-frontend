@@ -1,6 +1,14 @@
 <template>
   <div class="login-container">
+
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+      <router-link to="/">
+        <span style="color: #fff; font-size: 20px; display:inline-block;margin-bottom:100px" >
+          <i class="el-icon-back" style="display:inline-block;margin-right: 20px"/>
+          回到首页
+        </span>
+
+      </router-link>
 
       <div class="title-container">
         <h3 class="title">登录管理页面</h3>
@@ -261,7 +269,7 @@ $light_gray:#eee;
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 100px 35px 0;
     margin: 0 auto;
     overflow: hidden;
   }

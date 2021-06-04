@@ -22,7 +22,7 @@
           style="width: 100%;"
         >
           <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" />
-          <el-table-column label="用户名" prop="name" sortable="custom" align="center">
+          <el-table-column label="用户名" prop="username" sortable="custom" align="center">
             <template slot-scope="{row}">
               <template v-if="row.id === editId">
                 <el-input v-model="editTableForm.username" class="edit-input" size="small" clearable />
@@ -30,7 +30,7 @@
               <span v-else>{{ row.username }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="手机" prop="name" sortable="custom" align="center">
+          <el-table-column label="手机" prop="phone" sortable="custom" align="center">
             <template slot-scope="{row}">
               <template v-if="row.id === editId">
                 <el-input v-model="editTableForm.phone" class="edit-input" size="small" clearable />
@@ -38,7 +38,7 @@
               <span v-else>{{ row.phone }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="昵称" prop="name" sortable="custom" align="center">
+          <el-table-column label="昵称" prop="nickname" sortable="custom" align="center">
             <template slot-scope="{row}">
               <template v-if="row.id === editId">
                 <el-input v-model="editTableForm.nickname" class="edit-input" size="small" clearable />
@@ -46,7 +46,7 @@
               <span v-else>{{ row.nickname }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="简介" prop="name" sortable="custom" align="center">
+          <el-table-column label="简介" prop="introduction" sortable="custom" align="center">
             <template slot-scope="{row}">
               <template v-if="row.id === editId">
                 <el-input v-model="editTableForm.introduction" class="edit-input" size="small" clearable />
@@ -54,7 +54,7 @@
               <span v-else>{{ row.introduction }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="头像" prop="name" sortable="custom" align="center">
+          <el-table-column label="头像" prop="avatar" sortable="custom" align="center">
             <template slot-scope="{row}">
               <template v-if="row.id === editId">
                 <el-input v-model="editTableForm.avatar" class="edit-input" size="small" clearable />

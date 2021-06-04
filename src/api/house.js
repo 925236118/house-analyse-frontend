@@ -7,6 +7,13 @@ export function fetchHouseList() {
   })
 }
 
+export function houseCount() {
+  return request({
+    url: '/api/backend/house/count',
+    method: 'get'
+  })
+}
+
 export function fetchHouseById(params) {
   return request({
     url: `/api/backend/house/${params.id}`,

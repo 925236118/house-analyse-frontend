@@ -8,9 +8,24 @@
         房屋租赁信息网站
       </h3>
       <div class="login-btn">
-        <a href="/backend/dashboard">
-          <el-button>管理</el-button>
-        </a>
+        <template v-if="name">
+          <span class="welcome">欢迎你，
+          <router-link to="/user/profile">
+            <span class="username">{{ name }}</span>
+          </router-link>
+        </span>
+          <a href="/backend/dashboard">
+            <el-button>管理页面</el-button>
+          </a>
+        </template>
+        <template v-else>
+          <div class="welcome" style="line-height: 35px;">
+            你还未登录。
+            <router-link to="/backend/dashboard">
+              <span class="username">请登录</span>
+            </router-link>
+          </div>
+        </template>
       </div>
     </div>
     <el-row style="margin: 30px 0;">
@@ -81,6 +96,7 @@
 
 <script>
 import { fetchHouseList } from '@/api/house'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Index',
   data() {
@@ -115,7 +131,10 @@ export default {
         }
       }
       return result
-    }
+    },
+    ...mapGetters([
+      'name'
+    ])
   },
   mounted() {
     fetchHouseList()
@@ -270,5 +289,16 @@ export default {
   .pagination {
     text-align: center;
     margin: 20px 0 60px 0;
+  }
+  .welcome {
+    display: inline-block;
+    margin-right: 25px;
+    color: #fff
+  }
+  .username {
+    text-decoration: underline;
+  }
+  .username:hover {
+    color: #0db7ff;
   }
 </style>

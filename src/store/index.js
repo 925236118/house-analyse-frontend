@@ -17,9 +17,17 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
   return modules
 }, {})
 
+const actions = {
+  updateUserModuleState ({ rootState }) {
+    console.log(123)
+    rootState.user = JSON.parse(JSON.stringify(rootState.user))
+  }
+}
+
 const store = new Vuex.Store({
   modules,
-  getters
+  getters,
+  actions
 })
 
 export default store
