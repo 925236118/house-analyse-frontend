@@ -5,7 +5,7 @@
         <h2>
           城市列表
           <el-tooltip class="item" effect="dark" content="新建" placement="top">
-            <el-button type='success' circle size="mini" style="margin-left: 20px" @click="showAddDialog">
+            <el-button type='success' circle size="mini" style="margin-left: 20px" @click="showAddDialog" v-permission="['admin']">
               <i class="el-icon-plus" />
             </el-button>
           </el-tooltip>
@@ -30,7 +30,7 @@
               <span v-else>{{ row.name }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" sortable="custom" align="center" width="180">
+          <el-table-column label="操作" sortable="custom" align="center" width="180" v-if="checkPermission(['admin'])">
             <template slot-scope="{row}">
               <el-tooltip class="item" v-if="row.id === editId" effect="dark" content="提交" placement="top">
                 <el-button type="primary" size="mini" circle class="button"
@@ -81,8 +81,11 @@
 
 <script>
 import { fetchCityList, deleteCityById, updateCityById, addCity } from '@/api/city'
+import permission from '@/directive/permission/index.js' // 权限判断指令
+import checkPermission from '@/utils/permission' // 权限判断函数
 export default {
   name: 'CityList',
+  directives: { permission },
   data () {
     return {
       listLoading: false,
@@ -108,6 +111,7 @@ export default {
       })
   },
   methods: {
+    checkPermission,
     submitEditSource () {
       updateCityById(this.editTableForm)
         .then((res) => {

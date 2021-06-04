@@ -13,7 +13,7 @@
         </router-link>
         <el-carousel :interval="4000" type="card" height="400px">
           <el-carousel-item v-for="(item, index) in imageList" :key="index">
-            <el-image :src="item.img_url"></el-image>
+            <el-image :src="item.img_url" />
           </el-carousel-item>
         </el-carousel>
 
@@ -139,6 +139,6 @@ export default {
 }
 .house-attrs {
   font-size: 20px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 </style>

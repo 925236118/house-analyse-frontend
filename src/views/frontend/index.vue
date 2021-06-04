@@ -28,8 +28,9 @@
                   <el-tag
                     v-for="(tag, houseIndex) in house.tags"
                     :key="houseIndex"
+                    style="margin-right: 10px"
                   >
-                    {{ tag }}
+                    {{ tag.name }}
                   </el-tag>
                 </div>
                 <div class="bottom clearfix">
@@ -69,6 +70,8 @@
 import { fetchHouseList } from '@/api/house'
 import { mapGetters } from 'vuex'
 import Topbar from './topbar.vue'
+import { fetchSourceList } from '@/api/source'
+import { fetchCityList } from '@/api/city'
 
 export default {
   name: 'Index',
@@ -113,11 +116,27 @@ export default {
   mounted() {
     fetchHouseList()
       .then((res) => {
-        this.originHouseList = res.results
-        this.allHouseList = res.results
-        this.houseList = this.allHouseList.slice(0, this.pageSize)
-        this.total = res.count
       })
+
+    Promise.all([fetchHouseList(), fetchSourceList(), fetchCityList()])
+      .then(res => {
+        let [houseResult, sourceResult, cityResult] = res
+        this.originHouseList = houseResult.results
+        this.allSourceList = sourceResult.results
+        this.allCityList = cityResult.results
+        this.originHouseList.forEach(houseData => {
+          let source = this.allSourceList.find(item => item.id === houseData.source)
+          let city = this.allCityList.find(item => item.id === houseData.city)
+          houseData.tags = [source, city]
+        })
+        this.allHouseList = this.originHouseList
+        this.total = this.originHouseList.count
+
+        this.houseList = this.allHouseList.slice(0, this.pageSize)
+      })
+
+
+
   },
   methods: {
     showHouseDetail(houseId) {
@@ -141,22 +160,26 @@ export default {
       this.filterHouseList()
     },
     filterHouseList () {
-      this.allHouseList = this.originHouseList.filter((dataItem) => {
-        let result = false
-        Object.keys(this.filterForm).forEach(filterKey => {
-          let filterValue = this.filterForm[filterKey]
-          if (!filterValue) return
-          let filterReg = new RegExp(filterValue)
-          Object.keys(dataItem).forEach(dataKey => {
-            if (typeof dataItem[dataKey] !== 'string') return
-            result = result || filterReg.test(dataItem[dataKey])
+      if (!this.filterForm.searchValue) {
+        this.allHouseList = this.originHouseList
+      } else {
+        this.allHouseList = this.originHouseList.filter((dataItem) => {
+          let result = false
+          Object.keys(this.filterForm).forEach(filterKey => {
+            let filterValue = this.filterForm[filterKey]
+            if (!filterValue) return
+            let filterReg = new RegExp(filterValue)
+            Object.keys(dataItem).forEach(dataKey => {
+              if (typeof dataItem[dataKey] !== 'string') return
+              result = result || filterReg.test(dataItem[dataKey])
+            })
+            dataItem.attrs.forEach(attrItem => {
+              result = result || filterReg.test(attrItem.value)
+            })
           })
-          dataItem.attrs.forEach(attrItem => {
-            result = result || filterReg.test(attrItem.value)
-          })
+          return result
         })
-        return result
-      })
+      }
       this.total = this.allHouseList.length
       this.changePage(1)
     }

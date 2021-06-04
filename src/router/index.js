@@ -57,7 +57,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/house/:id',
+    path: '/front/house/:id',
     component: () => import('@/views/frontend/detail'),
     name: 'frontHouseDetail',
     hidden: true
