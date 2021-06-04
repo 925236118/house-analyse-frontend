@@ -1,33 +1,6 @@
 <template>
   <div>
-    <div class="nav">
-      <div class="project-icon">
-        <i class=" el-icon-school" />
-      </div>
-      <h3>
-        房屋租赁信息网站
-      </h3>
-      <div class="login-btn">
-        <template v-if="name">
-          <span class="welcome">欢迎你，
-          <router-link to="/user/profile">
-            <span class="username">{{ name }}</span>
-          </router-link>
-        </span>
-          <a href="/backend/dashboard">
-            <el-button>管理页面</el-button>
-          </a>
-        </template>
-        <template v-else>
-          <div class="welcome" style="line-height: 35px;">
-            你还未登录。
-            <router-link to="/backend/dashboard">
-              <span class="username">请登录</span>
-            </router-link>
-          </div>
-        </template>
-      </div>
-    </div>
+    <Topbar />
     <el-row style="margin: 30px 0;">
       <el-col :offset="8" :span="8">
         <el-input placeholder="请输入搜索内容" v-model="filterForm.searchValue" class="input-with-select" @change="changeSearchValue">
@@ -60,16 +33,14 @@
                   </el-tag>
                 </div>
                 <div class="bottom clearfix">
-                  <el-button type="text" class="button" @click="showHouseDetail(house.id)">
-                    <el-tooltip class="item" effect="dark" content="显示房屋详情信息" placement="top">
-                      <i class="el-icon-plus" />
-                    </el-tooltip>
-                  </el-button>
-                  <el-button type="text" class="button" style="margin-right: 5px" @click="jumpHouseSourceUrl(house.url)">
-                    <el-tooltip class="item" effect="dark" content="跳转房屋源网站" placement="top">
-                      <i class="el-icon-top-right" />
-                    </el-tooltip>
-                  </el-button>
+                  <el-tooltip class="item" effect="dark" content="显示房屋详情信息" placement="top">
+                    <el-button icon="el-icon-plus" type="primary" round class="button" @click="showHouseDetail(house.id)">
+                    </el-button>
+                  </el-tooltip>
+                  <el-tooltip class="item" effect="dark" content="跳转房屋源网站" placement="top">
+                    <el-button icon="el-icon-top-right" type="success" round class="button" style="margin-right: 5px" @click="jumpHouseSourceUrl(house.url)">
+                    </el-button>
+                  </el-tooltip>
                 </div>
               </div>
             </el-card>
@@ -97,8 +68,11 @@
 <script>
 import { fetchHouseList } from '@/api/house'
 import { mapGetters } from 'vuex'
+import Topbar from './topbar.vue'
+
 export default {
   name: 'Index',
+  components: { Topbar },
   data() {
     return {
       originHouseList: [],
@@ -147,7 +121,7 @@ export default {
   },
   methods: {
     showHouseDetail(houseId) {
-      alert(houseId)
+      this.$router.push({name: 'frontHouseDetail', params: { id: houseId }})
     },
     jumpHouseSourceUrl(url) {
       let oA = document.createElement('a')
@@ -191,40 +165,6 @@ export default {
 </script>
 
 <style scoped>
-  .nav {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    background-color: #7773a0;
-  }
-  .nav h3 {
-    padding: 0;
-    margin: 0;
-    color: #fff;
-    font-size: 20px;
-    padding-top: 15px;
-    padding-left: 100px;
-  }
-  .nav .project-icon {
-    position: absolute;
-    font-size: 26px;
-    top: 5px;
-    left: 35px;
-    background: #fff;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    padding-left: 7px;
-    padding-top: 2px;
-    line-height: 40px;
-    color: #7773a0;
-
-  }
-  .login-btn {
-    position: absolute;
-    top: 8px;
-    right: 20px;
-  }
   /**
   house list
    */
@@ -268,7 +208,7 @@ export default {
   }
 
   .button {
-    padding: 0;
+    padding: 5px;
     float: right;
   }
 
@@ -289,16 +229,5 @@ export default {
   .pagination {
     text-align: center;
     margin: 20px 0 60px 0;
-  }
-  .welcome {
-    display: inline-block;
-    margin-right: 25px;
-    color: #fff
-  }
-  .username {
-    text-decoration: underline;
-  }
-  .username:hover {
-    color: #0db7ff;
   }
 </style>

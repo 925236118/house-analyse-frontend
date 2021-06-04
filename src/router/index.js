@@ -57,6 +57,12 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/house/:id',
+    component: () => import('@/views/frontend/detail'),
+    name: 'frontHouseDetail',
+    hidden: true
+  },
+  {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -87,7 +93,7 @@ export const constantRoutes = [
         meta: { title: '仪表盘', icon: 'dashboard', affix: true }
       }
     ]
-  },
+  }
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -113,20 +119,20 @@ export const constantRoutes = [
   //     }
   //   ]
   // },
-  {
-    path: '/profile',
-    component: Layout,
-    redirect: '/profile/index',
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/profile/index'),
-        name: 'Profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
-      }
-    ]
-  }
+  // {
+  //   path: '/profile',
+  //   component: Layout,
+  //   redirect: '/profile/index',
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/profile/index'),
+  //       name: 'Profile',
+  //       meta: { title: 'Profile', icon: 'user', noCache: true }
+  //     }
+  //   ]
+  // }
 ]
 
 /**
@@ -190,21 +196,21 @@ export const asyncRoutes = [
         component: () => import('@/views/user/profile'),
         name: 'UserProfile',
         meta: { title: '用户详情', icon: 'documentation', noCache: true }
-      },
-      {
-        path: 'list',
-        component: () => import('@/views/user/list'),
-        name: 'UserList',
-        meta: { title: '用户列表', icon: 'list', noCache: true },
-        roles: ['admin']
-      },
-      {
-        path: 'role',
-        component: () => import('@/views/user/role'),
-        name: 'RoleList',
-        meta: { title: '权限列表', icon: 'lock', noCache: true },
-        roles: ['admin']
       }
+      // {
+      //   path: 'list',
+      //   component: () => import('@/views/user/list'),
+      //   name: 'UserList',
+      //   meta: { title: '用户列表', icon: 'list', noCache: true },
+      //   roles: ['admin']
+      // },
+      // {
+      //   path: 'role',
+      //   component: () => import('@/views/user/role'),
+      //   name: 'RoleList',
+      //   meta: { title: '权限列表', icon: 'lock', noCache: true },
+      //   roles: ['admin']
+      // }
     ]
   },
 

@@ -51,3 +51,34 @@ export function deleteUserById(params) {
     method: 'delete'
   })
 }
+
+export function fetchUserRoleList() {
+  return request({
+    url: '/api/backend/user/role',
+    method: 'get'
+  })
+}
+
+
+export function updateRoleById(data) {
+  return request({
+    url: `/api/backend/user/role/${data.id}`,
+    method: 'put',
+    data
+  })
+}
+
+export function addRole(data) {
+  return request({
+    url: `/api/backend/user/role/`,
+    method: 'post',
+    data
+  })
+}
+
+export function deleteRoleById(params) {
+  return request({
+    url: `/api/backend/user/role/${params.id}`,
+    method: 'delete'
+  })
+}

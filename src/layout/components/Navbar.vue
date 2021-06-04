@@ -5,18 +5,6 @@
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
-    <!--      <template v-if="device!=='mobile'">-->
-    <!--        <search id="header-search" class="right-menu-item" />-->
-
-    <!--        <error-log class="errLog-container right-menu-item hover-effect" />-->
-
-    <!--        <screenfull id="screenfull" class="right-menu-item hover-effect" />-->
-
-    <!--        <el-tooltip content="Global Size" effect="dark" placement="bottom">-->
-    <!--          <size-select id="size-select" class="right-menu-item hover-effect" />-->
-    <!--        </el-tooltip>-->
-
-    <!--      </template>-->
       <router-link to="/">
         <el-button style="position: absolute;top: 8px;right: 100px;">回到首页</el-button>
       </router-link>
@@ -26,7 +14,7 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/profile/index">
+          <router-link to="/user/profile">
             <el-dropdown-item>用户设置</el-dropdown-item>
           </router-link>
           <router-link to="/">

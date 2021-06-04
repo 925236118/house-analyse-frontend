@@ -82,6 +82,12 @@
                   <i class="el-icon-edit" />
                 </el-button>
               </el-tooltip>
+              <el-tooltip class="item" v-if="!editId" effect="dark" content="配置权限" placement="top">
+                <el-button type="primary" size="mini" circle class="button"
+                           @click="showConfigUserRoleDialog(row)">
+                  <i class="el-icon-setting" />
+                </el-button>
+              </el-tooltip>
               <el-button slot="reference" type="danger" size="mini" circle class="button" style="margin-right: 5px"
                          @click="deleteUser(row.id)">
                 <el-tooltip class="item" effect="dark" content="删除" placement="top">
