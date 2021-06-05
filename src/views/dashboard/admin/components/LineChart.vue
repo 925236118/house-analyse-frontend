@@ -31,7 +31,7 @@ export default {
       default: ''
     },
     chartData: {
-      type: Array,
+      type: Object,
       required: true
     }
   },

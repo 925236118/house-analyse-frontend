@@ -2,10 +2,35 @@
   <div>
     <Topbar />
     <el-row style="margin: 30px 0;">
-      <el-col :offset="8" :span="8">
-        <el-input placeholder="请输入搜索内容" v-model="filterForm.searchValue" class="input-with-select" @change="changeSearchValue">
-          <el-button slot="append" type="primary" icon="el-icon-search"></el-button>
-        </el-input>
+      <el-col :offset="4" :span="16">
+<!--        <el-input placeholder="请输入搜索内容" v-model="filterForm.searchValue" class="input-with-select" @change="changeSearchValue">-->
+<!--          <el-button slot="append" type="primary" icon="el-icon-search"></el-button>-->
+<!--        </el-input>-->
+        <el-form :inline="true" :model="searchForm" class="form-inline" style="text-align: center">
+          <el-form-item label="标题">
+            <el-input v-model="searchForm.title" placeholder="请填写要搜索的标题" clearable @input="changeSearchParams" />
+          </el-form-item>
+          <el-form-item label="来源">
+            <el-select v-model="searchForm.source" placeholder="请选择来源" clearable @change="changeSearchParams">
+              <el-option
+                v-for="(source, index) in allSourceList"
+                :key="index"
+                :label="source.name"
+                :value="source.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="城市">
+            <el-select v-model="searchForm.city" placeholder="请选择城市" clearable @change="changeSearchParams">
+              <el-option
+                v-for="(city, index) in allCityList"
+                :key="index"
+                :label="city.name"
+                :value="city.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
       </el-col>
     </el-row>
     <el-row>
@@ -14,6 +39,7 @@
           <el-col v-for="(house, index) in houseRow" :key="index" :span="4" :offset="index % 5 === 0 ? 0 : 1">
             <el-card :body-style="{ padding: '0px' }" class="house-card">
               <el-image
+                style="height: 250px;"
                 v-if="house.imgs[0]"
                 :src="house.imgs[0].img_url"
                 fit="fill"
@@ -87,6 +113,17 @@ export default {
       pageSizes: [10, 20, 30, 50],
       filterForm: {
         searchValue: ''
+      },
+      searchForm: {
+
+      },
+      allSourceList: [],
+      allCityList: [],
+
+      searchRules: {
+        title: 'reg',
+        source: 'match',
+        city: 'match'
       }
     }
   },
@@ -114,10 +151,6 @@ export default {
     ])
   },
   mounted() {
-    fetchHouseList()
-      .then((res) => {
-      })
-
     Promise.all([fetchHouseList(), fetchSourceList(), fetchCityList()])
       .then(res => {
         let [houseResult, sourceResult, cityResult] = res
@@ -130,13 +163,10 @@ export default {
           houseData.tags = [source, city]
         })
         this.allHouseList = this.originHouseList
-        this.total = this.originHouseList.count
+        this.total = this.originHouseList.length
 
         this.houseList = this.allHouseList.slice(0, this.pageSize)
       })
-
-
-
   },
   methods: {
     showHouseDetail(houseId) {
@@ -156,7 +186,7 @@ export default {
       this.currentPage = page
       this.houseList = this.allHouseList.slice(0, val)
     },
-    changeSearchValue () {
+    /*changeSearchValue () {
       this.filterHouseList()
     },
     filterHouseList () {
@@ -176,12 +206,41 @@ export default {
             dataItem.attrs.forEach(attrItem => {
               result = result || filterReg.test(attrItem.value)
             })
+            dataItem.tags.forEach(attrItem => {
+              result = result || filterReg.test(attrItem.value)
+            })
           })
           return result
         })
       }
       this.total = this.allHouseList.length
       this.changePage(1)
+    },*/
+    changeSearchParams () {
+      this.houseList = []
+      this.allHouseList = []
+      this.originHouseList.forEach(house => {
+        let result = true
+        Object.keys(this.searchForm).forEach(key => {
+          if (!this.searchForm[key]) {
+            return
+          }
+          switch (this.searchRules[key]) {
+            case 'reg':
+              let reg = new RegExp(this.searchForm[key])
+              result = result && reg.test(house[key])
+              break
+            case 'match':
+              result = result && house[key] === this.searchForm[key]
+              break
+          }
+        })
+        if (result) {
+          this.allHouseList.push(house)
+        }
+      })
+      this.houseList = this.allHouseList.slice(0, this.pageSize)
+      this.total = this.allHouseList.length
     }
   }
 }

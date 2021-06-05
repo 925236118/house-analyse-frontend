@@ -370,7 +370,6 @@ export default {
       this.houseList = this.searchedHouseList.slice(0, val)
     },
     changeSearchParams () {
-      console.log(this.searchForm)
       this.houseList = []
       this.searchedHouseList = []
       this.allHouseList.forEach(house => {
